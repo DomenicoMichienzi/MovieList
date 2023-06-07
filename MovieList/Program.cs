@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using MovieList.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,7 +13,6 @@ builder.Services.AddCors(options => {
         cfg.AllowAnyHeader();
         cfg.AllowAnyMethod();
     });
-
     options.AddPolicy(name: "AnyOrigin",
         cfg => {
             cfg.AllowAnyOrigin();
@@ -30,7 +28,8 @@ builder.Services.AddSwaggerGen();
 
 // Add DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("WebApiMovieDatabase"))
+    options.UseSqlite(
+        builder.Configuration.GetConnectionString("WebApiMovieDatabase"))
     );
 
 var app = builder.Build();
