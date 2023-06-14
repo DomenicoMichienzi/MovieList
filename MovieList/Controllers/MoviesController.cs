@@ -57,5 +57,43 @@ namespace MovieList.Controllers
                 }
             };
         }
+
+        [HttpPost(Name = "UpdateMovie")]
+        [ResponseCache(NoStore = true)]
+        public async Task<RestDTO<Movie?>> Post(MovieDTO model)
+        {
+            var movie = await _context.Movies
+                .Where(m => m.Id == model.Id)
+                .FirstOrDefaultAsync();
+            
+            if (movie == null)
+            {
+                if (!string.IsNullOrWhiteSpace(model.Title))
+                    movie.Title = model.Title;
+                if (model.ReleaseDate.HasValue)
+                    movie.ReleaseDate = model.ReleaseDate.Value;
+
+                movie.LastModifiedDate = DateTime.Now;
+
+                _context.Movies.Update(movie);
+                await _context.SaveChangesAsync();
+            }
+
+            return new RestDTO<Movie?>()
+            {
+                Data = movie,
+                Links = new List<LinkDTO>
+                {
+                    new LinkDTO(
+                        Url.Action(
+                            null,
+                            "Movies",
+                            model,
+                            Request.Scheme)!,
+                        "self",
+                        "POST"),
+                }
+            };
+        }
     }
 }
