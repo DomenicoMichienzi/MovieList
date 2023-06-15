@@ -95,5 +95,36 @@ namespace MovieList.Controllers
                 }
             };
         }
+
+        [HttpDelete(Name = "DeleteMovie")]
+        [ResponseCache(NoStore = true)]
+        public async Task<RestDTO<Movie?>> Delete(int id)
+        {
+            var movie = await _context.Movies
+                .Where(m => m.Id == id)
+                .FirstOrDefaultAsync();
+
+            if (movie != null)
+            {
+                _context.Movies.Remove(movie);
+                await _context.SaveChangesAsync();
+            }
+
+            return new RestDTO<Movie?>()
+            {
+                Data = movie,
+                Links = new List<LinkDTO>
+                {
+                    new LinkDTO(
+                        Url.Action(
+                            null,
+                            "Movies",
+                            id,
+                            Request.Scheme)!,
+                        "self",
+                        "DELETE"),
+                }
+            };
+        }
     }
 }
