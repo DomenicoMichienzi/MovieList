@@ -23,7 +23,7 @@ namespace MovieList.Controllers
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 60)]
         public async Task<RestDTO<Movie[]>> Get(
             int pageIndex = 0,
-            int pageSize = 10,
+            int pageSize = 25,
             string? sortColumn = "Title",
             string? sortOrder = "ASC",
             string? filterQuery = null)
@@ -66,7 +66,7 @@ namespace MovieList.Controllers
                 .Where(m => m.Id == model.Id)
                 .FirstOrDefaultAsync();
             
-            if (movie == null)
+            if (movie != null)
             {
                 if (!string.IsNullOrWhiteSpace(model.Title))
                     movie.Title = model.Title;

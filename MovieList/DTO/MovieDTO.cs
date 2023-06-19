@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace MovieList.DTO;
 
@@ -11,7 +12,8 @@ public class MovieDTO
     
     public decimal? Popularity { get; set; }
     
-    public DateTime? ReleaseDate { get; set; }
+    [DefaultValue(null)]
+    public DateTime? ReleaseDate { get; set; } 
     
     public decimal? Revenue { get; set; }
     
