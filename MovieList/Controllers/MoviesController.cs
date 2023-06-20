@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieList.DTO;
 using MovieList.Models;
@@ -23,9 +24,9 @@ namespace MovieList.Controllers
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 60)]
         public async Task<RestDTO<Movie[]>> Get(
             int pageIndex = 0,
-            int pageSize = 25,
+            [Range(1, 100)] int pageSize = 25,
             string? sortColumn = "Title",
-            string? sortOrder = "ASC",
+            [RegularExpression("ASC|DESC")]string? sortOrder = "ASC",
             string? filterQuery = null)
         {
             var query = _context.Movies.AsQueryable();
