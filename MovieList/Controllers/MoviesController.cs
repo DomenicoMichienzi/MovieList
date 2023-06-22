@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using MovieList.DTO;
 using MovieList.Models;
 using System.Linq.Dynamic.Core;
+using MovieList.Attributes;
 
 namespace MovieList.Controllers
 {
@@ -25,7 +26,7 @@ namespace MovieList.Controllers
         public async Task<RestDTO<Movie[]>> Get(
             int pageIndex = 0,
             [Range(1, 100)] int pageSize = 25,
-            string? sortColumn = "Title",
+            [SortColumnValidator(typeof(MovieDTO))] string? sortColumn = "Title",
             [RegularExpression("ASC|DESC")] string? sortOrder = "ASC",
             string? filterQuery = null)
         {
