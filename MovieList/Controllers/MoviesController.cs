@@ -26,7 +26,7 @@ namespace MovieList.Controllers
             int pageIndex = 0,
             [Range(1, 100)] int pageSize = 25,
             string? sortColumn = "Title",
-            [RegularExpression("ASC|DESC")]string? sortOrder = "ASC",
+            [RegularExpression("ASC|DESC")] string? sortOrder = "ASC",
             string? filterQuery = null)
         {
             var query = _context.Movies.AsQueryable();
