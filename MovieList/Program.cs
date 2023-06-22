@@ -2,11 +2,11 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieList.Models;
+using MovieList.Swagger;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddCors(options => {
     options.AddDefaultPolicy(cfg => {
         cfg.WithOrigins(builder.Configuration["AllowedOrigins"]);
@@ -24,7 +24,10 @@ builder.Services.AddCors(options => {
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.ParameterFilter<SortColumnFilter>();
+});
 
 // Add DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
