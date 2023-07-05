@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieList.DTO;
 using MovieList.Models;
 using System.Linq.Dynamic.Core;
+using MovieList.Attributes;
 
 namespace MovieList.Controllers
 {
@@ -22,33 +24,38 @@ namespace MovieList.Controllers
         [HttpGet(Name = "GetMovies")]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 60)]
         public async Task<RestDTO<Movie[]>> Get(
-            [FromQuery] RequestDTO<MovieDTO> input)
+            int pageIndex,
+            [Range(1, 100)] int pageSize = 10,
+            [SortColumnValidator(typeof(MovieDTO))] string? sortColumn = "Title",
+            [RegularExpression("ASC|DESC")] string? sortOrder = "ASC",
+            string? filterQuery = null
+            )
         {
             var query = _context.Movies.AsQueryable();
             
             // Search by Title
-            if (!string.IsNullOrWhiteSpace(input.FilterQuery))
-                query = query.Where(m => m.Title.Contains(input.FilterQuery));
+            if (!string.IsNullOrWhiteSpace(filterQuery))
+                query = query.Where(m => m.Title.Contains(filterQuery));
 
             var recordCount = await query.CountAsync();
 
             query = query
-                .OrderBy($"{input.SortColumn} {input.SortOrder}")
-                .Skip(input.PageIndex * input.PageSize)
-                .Take(input.PageSize);
+                .OrderBy($"{sortColumn} {sortOrder}")
+                .Skip(pageIndex * pageSize)
+                .Take(pageSize);
             
             return new RestDTO<Movie[]>()
             {
                 Data = await query.ToArrayAsync(),
-                PageIndex = input.PageIndex,
-                PageSize = input.PageSize,
+                PageIndex = pageIndex,
+                PageSize = pageSize,
                 RecordCount = recordCount,
                 Links = new List<LinkDTO>{
                     new LinkDTO(
                         Url.Action(
                             null,
                             "Movies",
-                            new { input.PageIndex, input.PageSize },
+                            new { pageIndex, pageSize },
                             Request.Scheme)!,
                         "self",
                         "GET"),
