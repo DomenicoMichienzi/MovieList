@@ -5,6 +5,7 @@ using MovieList.DTO;
 using MovieList.Models;
 using System.Linq.Dynamic.Core;
 using MovieList.Attributes;
+using MovieList.Constants;
 
 namespace MovieList.Controllers
 {
@@ -14,7 +15,7 @@ namespace MovieList.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger<MoviesController> _logger;
-
+        
         public MoviesController(ApplicationDbContext context, ILogger<MoviesController> logger)
         {
             _context = context;
@@ -31,6 +32,9 @@ namespace MovieList.Controllers
             string? filterQuery = null
             )
         {
+            _logger.LogInformation(CustomLogEvents.MoviesController_Get,
+                "Get method started.");
+            
             var query = _context.Movies.AsQueryable();
             
             // Search by Title
