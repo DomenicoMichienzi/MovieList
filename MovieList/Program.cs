@@ -2,10 +2,29 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MovieList.Constants;
 using MovieList.Models;
 using MovieList.Swagger;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Logging
+builder.Logging
+    .ClearProviders()
+    .AddSimpleConsole()
+    .AddDebug();
+
+builder.Host.UseSerilog((ctx, lc) =>
+{
+    lc.ReadFrom.Configuration(ctx.Configuration);
+    lc.WriteTo.File("Logs/logs.txt",
+        outputTemplate:
+        "{Timestamp:HH:mm:ss} [{Level:u3}] " +
+        "{Message:lj}{NewLine}{Exception}",
+        rollingInterval: RollingInterval.Day);
+    lc.WriteTo.SQLite(Environment.CurrentDirectory + @"\Logs\logs.db");
+}, writeToProviders: true);
 
 // Add services to the container.
 builder.Services.AddCors(options => {
@@ -83,6 +102,12 @@ app.MapGet("/error",
         details.Type =
             "https://tools.ietf.org/html/rfc7231#section-6.6.1";
         details.Status = StatusCodes.Status500InternalServerError;
+        
+        app.Logger.LogError(
+            CustomLogEvents.Error_Get,
+            exceptionHandler?.Error,
+            "An unhandled exception occured.");
+        
         return Results.Problem(details);
     });
 
