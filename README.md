@@ -3,7 +3,7 @@
 ### A Web APIs with ASP.NET Core following [this book](https://www.manning.com/books/building-web-apis-with-asp-net-core)
 
 ### Key Features
-* ASP.NET Core
+* **ASP.NET Core 6**
 * Movie Dataset using REST, GraphQL and gRPC
 * Entity Framework Core
 * RESTful
