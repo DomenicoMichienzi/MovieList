@@ -23,7 +23,7 @@ namespace MovieList.Controllers
         }
 
         [HttpGet(Name = "GetMovies")]
-        [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 60)]
+        [ResponseCache(CacheProfileName = "Any-60")]
         public async Task<RestDTO<Movie[]>> Get(
             int pageIndex,
             [Range(1, 100)] int pageSize = 10,
@@ -68,7 +68,7 @@ namespace MovieList.Controllers
         }
 
         [HttpPost(Name = "UpdateMovie")]
-        [ResponseCache(NoStore = true)]
+        [ResponseCache(CacheProfileName = "NoCache")]
         public async Task<RestDTO<Movie?>> Post(MovieDTO model)
         {
             var movie = await _context.Movies
@@ -106,7 +106,7 @@ namespace MovieList.Controllers
         }
 
         [HttpDelete(Name = "DeleteMovie")]
-        [ResponseCache(NoStore = true)]
+        [ResponseCache(CacheProfileName = "NoCache")]
         public async Task<RestDTO<Movie?>> Delete(int id)
         {
             var movie = await _context.Movies
