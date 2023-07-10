@@ -51,6 +51,16 @@ builder.Services.AddControllers(options =>
         (x, y) => $"The value {x} is not valid for {y}.");
     options.ModelBindingMessageProvider.SetMissingKeyOrValueAccessor(
         () => $"A value is required.");
+    
+    // Cache profiles
+    options.CacheProfiles.Add("NoCache",
+        new CacheProfile() { NoStore = true});
+    options.CacheProfiles.Add("Any-60",
+        new CacheProfile()
+        {
+            Location = ResponseCacheLocation.Any,
+            Duration = 60
+        });
 });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -65,6 +75,15 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(
         builder.Configuration.GetConnectionString("WebApiMovieDatabase"))
     );
+
+builder.Services.AddResponseCaching(options =>
+{
+    // Sets max response body size to 32 MB
+    options.MaximumBodySize = 32 * 1024 * 1024;
+    
+    // Sets max middleware size to 50 MB
+    options.SizeLimit = 50 * 1024 * 1024;
+});
 
 var app = builder.Build();
 
@@ -83,9 +102,24 @@ app.UseHttpsRedirection();
 
 app.UseCors();
 
+app.UseResponseCaching();
+
 app.UseAuthorization();
 
-// Minimal API
+// Default cache-control directive
+app.Use((context, next) =>
+{
+    context.Response.GetTypedHeaders().CacheControl =
+        new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
+        {
+            NoCache = true,
+            NoStore = true
+        };
+    
+    return next.Invoke();
+});
+
+// Minimal APIs
 app.MapGet("/error",
     [EnableCors("AnyOrigin")] [ResponseCache(NoStore = true)]
     (HttpContext context) =>
@@ -115,6 +149,13 @@ app.MapGet("/error/test",
     [EnableCors("AnyOrigin")]
     [ResponseCache(NoStore = true)]
     () => { throw new Exception("test"); });
+
+app.MapGet("/cache/test/2",
+            [EnableCors("AnyOrigin")]
+            (HttpContext context) =>
+            {
+                return Results.Ok();
+            });
 
 // Controllers
 app.MapControllers().RequireCors("AnyOrigin");
