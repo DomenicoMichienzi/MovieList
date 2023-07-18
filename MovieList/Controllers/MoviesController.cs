@@ -45,7 +45,7 @@ namespace MovieList.Controllers
 
             query = query
                 .OrderBy($"{sortColumn} {sortOrder}")
-                .Skip(pageIndex * pageSize)
+                .Skip(pageIndex * pageSize) // TODO - Skip does not work on SQLite
                 .Take(pageSize);
             
             return new RestDTO<Movie[]>()
