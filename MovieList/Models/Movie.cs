@@ -23,28 +23,28 @@ public class Movie
     public string Overview { get; set; } = null!;
 
     [Required]
-    public decimal? Popularity { get; set; }
+    public double? Popularity { get; set; }
 
     [Required]
     public DateTime ReleaseDate { get; set; }
 
     [Required]
-    public decimal? Budget { get; set; }
+    public double? Budget { get; set; }
 
     [Required]
-    public decimal? Revenue { get; set; }
+    public double? Revenue { get; set; }
 
     [Required]
-    public decimal? Runtime { get; set; }
+    public double? Runtime { get; set; }
 
     [Required]
     public string? Status { get; set; } = null!;
 
     [Required]
-    public decimal? VoteAverage { get; set; }
+    public double? VoteAverage { get; set; }
 
     [Required]
-    public decimal? VoteCount { get; set; }
+    public double? VoteCount { get; set; }
 
     [Required]
     public DateTime CreatedDate { get; set; }

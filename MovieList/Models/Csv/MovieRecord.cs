@@ -25,7 +25,7 @@ public class MovieRecord
     public string? Overview { get; set; } = null!;
     
     [Name("popularity")]
-    public decimal? Popularity { get; set; }
+    public double? Popularity { get; set; }
     
     [Name("production_companies")]
     public string? ProductionCompanies { get; set; }
@@ -34,13 +34,13 @@ public class MovieRecord
     public string? ReleaseDate { get; set; }
     
     [Name("budget")]
-    public decimal? Budget { get; set; }
+    public double? Budget { get; set; }
     
     [Name("revenue")]
-    public decimal? Revenue { get; set; }
+    public double? Revenue { get; set; }
     
     [Name("runtime")]
-    public decimal? Runtime { get; set; }
+    public double? Runtime { get; set; }
     
     [Name("status")]
     public string? Status { get; set; }
@@ -49,10 +49,10 @@ public class MovieRecord
     public string? Tagline { get; set; }
     
     [Name("vote_average")]
-    public decimal? VoteAverage { get; set; }
+    public double? VoteAverage { get; set; }
     
     [Name("vote_count")]
-    public decimal? VoteCount { get; set; }
+    public double? VoteCount { get; set; }
     
     [Name("credits")]
     public string? Credits { get; set; }
