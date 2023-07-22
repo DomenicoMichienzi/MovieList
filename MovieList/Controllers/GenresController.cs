@@ -23,7 +23,9 @@ public class GenresController : ControllerBase
     }
 
     [HttpGet(Name = "GetGenres")]
-    [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 60)]
+    [ResponseCache(
+        CacheProfileName = "Any-60", 
+        VaryByQueryKeys = new string[]{"*"})]
     [ManualValidationFilter]
     public async Task<ActionResult<RestDTO<Genre[]>>> Get(
         [FromQuery] RequestDTO<GenresDTO> input)

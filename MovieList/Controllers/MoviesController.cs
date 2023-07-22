@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieList.DTO;
@@ -23,9 +24,11 @@ namespace MovieList.Controllers
         }
 
         [HttpGet(Name = "GetMovies")]
-        [ResponseCache(CacheProfileName = "Any-60")]
+        [ResponseCache(
+            CacheProfileName = "Any-60", 
+            VaryByQueryKeys = new string[]{"*"})]
         public async Task<RestDTO<Movie[]>> Get(
-            int pageIndex,
+            [DefaultValue(0)] int pageIndex = 0,
             [Range(1, 100)] int pageSize = 10,
             [SortColumnValidator(typeof(MovieDTO))] string? sortColumn = "Title",
             [RegularExpression("ASC|DESC")] string? sortOrder = "ASC",
@@ -45,7 +48,7 @@ namespace MovieList.Controllers
 
             query = query
                 .OrderBy($"{sortColumn} {sortOrder}")
-                .Skip(pageIndex * pageSize) // TODO - Skip does not work on SQLite
+                .Skip(pageIndex * pageSize)
                 .Take(pageSize);
             
             return new RestDTO<Movie[]>()

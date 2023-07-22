@@ -22,7 +22,9 @@ public class ProductionCompaniesController : ControllerBase
     }
 
     [HttpGet(Name = "GetProductionCompanies")]
-    [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 60)]
+    [ResponseCache(
+        CacheProfileName = "Any-60", 
+        VaryByQueryKeys = new string[]{"*"})]
     public async Task<RestDTO<ProductionCompany[]>> Get(
         [FromQuery] RequestDTO<ProductionCompanyDTO> input)
     {
