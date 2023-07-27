@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using MovieList.DTO;
 using MovieList.Models;
 using System.Linq.Dynamic.Core;
+using Microsoft.AspNetCore.Authorization;
 using MovieList.Attributes;
 using MovieList.Constants;
 
@@ -70,6 +71,7 @@ namespace MovieList.Controllers
             };
         }
 
+        [Authorize]
         [HttpPost(Name = "UpdateMovie")]
         [ResponseCache(CacheProfileName = "NoCache")]
         public async Task<RestDTO<Movie?>> Post(MovieDTO model)
@@ -107,7 +109,8 @@ namespace MovieList.Controllers
                 }
             };
         }
-
+    
+        [Authorize(Roles = RoleNames.Moderator)]
         [HttpDelete(Name = "DeleteMovie")]
         [ResponseCache(CacheProfileName = "NoCache")]
         public async Task<RestDTO<Movie?>> Delete(int id)
