@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MovieList.Constants;
+using MovieList.GraphQL;
 using MovieList.Models;
 using MovieList.Swagger;
 using Serilog;
@@ -104,6 +105,16 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(
         builder.Configuration.GetConnectionString("WebApiMovieDatabase"))
     );
+
+// GraphQL
+builder.Services.AddGraphQLServer()
+    .AddAuthorization()
+    .AddQueryType<Query>()
+    .AddMutationType<Mutation>()
+    .AddProjections()
+    .AddFiltering()
+    .AddSorting();
+
 // Identity services
 builder.Services.AddIdentity<ApiUser, IdentityRole> (options =>
 {
@@ -172,6 +183,8 @@ app.UseResponseCaching();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapGraphQL();
 
 // Default cache-control directive
 app.Use((context, next) =>
