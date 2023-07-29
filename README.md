@@ -16,3 +16,7 @@
 
 ### A few details
 * For space reasons the dataset has been reduced to 200k movies, from over 700k, taking only movies from 2016 to 2023
+
+### Where to go
+* Swagger: `https://localhost:7156/swagger`
+* GraphQL: `https://localhost:7156/graphql`
