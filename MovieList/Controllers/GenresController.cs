@@ -3,7 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using MovieList.DTO;
 using MovieList.Models;
 using System.Linq.Dynamic.Core;
+using Microsoft.AspNetCore.Authorization;
 using MovieList.Attributes;
+using MovieList.Constants;
 
 namespace MovieList.Controllers;
 
@@ -28,7 +30,7 @@ public class GenresController : ControllerBase
         VaryByQueryKeys = new string[]{"*"})]
     [ManualValidationFilter]
     public async Task<ActionResult<RestDTO<Genre[]>>> Get(
-        [FromQuery] RequestDTO<GenresDTO> input)
+        [FromQuery] RequestDTO<GenreDTO> input)
     {
         // Check ModelState Status
         if (!ModelState.IsValid)
@@ -90,7 +92,69 @@ public class GenresController : ControllerBase
         };
     }
     
-    // TODO - POST Method
     
-    // TODO - Delete Method
+    [Authorize(Roles = RoleNames.Moderator)]
+    [HttpPost(Name = "UpdateGenre")]
+    [ResponseCache(CacheProfileName = "NoCache")]
+    public async Task<RestDTO<Genre?>> Post(GenreDTO model)
+    {
+        var genre = await _context.Genres
+            .Where(x => x.Id == model.Id)
+            .FirstOrDefaultAsync();
+        if (genre != null)
+        {
+            if (!string.IsNullOrWhiteSpace(model.Name))
+                genre.Name = model.Name;
+            genre.LastModifiedDate = DateTime.Now;
+            _context.Genres.Update(genre);
+            await _context.SaveChangesAsync();
+        }
+
+        return new RestDTO<Genre?>()
+        {
+            Data = genre,
+            Links = new List<LinkDTO>()
+            {
+                new LinkDTO(
+                    Url.Action(
+                        null,
+                        "Genres",
+                        model,
+                        Request.Scheme)!,
+                "self",
+                "POST"),
+            }
+        };
+    }
+    
+    [Authorize(Roles = RoleNames.Moderator)]
+    [HttpDelete(Name = "DeleteGenre")]
+    [ResponseCache(CacheProfileName = "NoCache")]
+    public async Task<RestDTO<Genre?>> Delete(int id)
+    {
+        var genre = await _context.Genres
+            .Where(x => x.Id == id)
+            .FirstOrDefaultAsync();
+        if (genre != null)
+        {
+            _context.Genres.Remove(genre);
+            await _context.SaveChangesAsync();
+        }
+
+        return new RestDTO<Genre?>()
+        {
+            Data = genre,
+            Links = new List<LinkDTO>
+            {
+                new LinkDTO(
+                    Url.Action(
+                        null,
+                        "Genres",
+                        id,
+                        Request.Scheme)!,
+                    "self",
+                    "DELETE"),
+            }
+        };
+    }
 }
