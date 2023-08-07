@@ -2,7 +2,7 @@
 
 namespace MovieList.DTO;
 
-public class GenresDTO
+public class GenreDTO
 {
     [Required]
     public int Id { get; set; }
