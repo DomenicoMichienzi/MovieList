@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using MovieList.DTO;
 using MovieList.Models;
 using System.Linq.Dynamic.Core;
+using Microsoft.AspNetCore.Authorization;
+using MovieList.Constants;
 
 namespace MovieList.Controllers;
 
@@ -62,8 +64,71 @@ public class ProductionCompaniesController : ControllerBase
         };
     }
     
-    // TODO - POST Method
-    
-    // TODO - Delete Method
+    [Authorize(Roles = RoleNames.Moderator)]
+    [HttpPost(Name = "UpdateProductionCompany")]
+    [ResponseCache(CacheProfileName = "NoCache")]
+    public async Task<RestDTO<ProductionCompany?>> Post(ProductionCompanyDTO model)
+    {
+        var productionCompany = await _context.ProductionCompanies
+            .Where(x => x.Id == model.Id)
+            .FirstOrDefaultAsync();
+
+        if (productionCompany != null)
+        {
+            if (!string.IsNullOrWhiteSpace(model.Name))
+                productionCompany.Name = model.Name;
+
+            productionCompany.LastModifiedDate = DateTime.Now;
+            _context.ProductionCompanies.Update(productionCompany);
+            await _context.SaveChangesAsync();
+        }
         
+        return new RestDTO<ProductionCompany?>()
+        {
+            Data = productionCompany,
+            Links = new List<LinkDTO>()
+            {
+                new LinkDTO(
+                    Url.Action(
+                        null,
+                        "ProductionCompanies",
+                        model,
+                        Request.Scheme)!,
+                    "self",
+                    "POST"),
+            }
+        };
+    }
+    
+    [Authorize(Roles = RoleNames.Moderator)]
+    [HttpDelete(Name = "DeleteProductionCompany")]
+    [ResponseCache(CacheProfileName = "NoCache")]
+    public async Task<RestDTO<ProductionCompany?>> Delete(int id)
+    {
+        var productionCompany = await _context.ProductionCompanies
+            .Where(x => x.Id == id)
+            .FirstOrDefaultAsync();
+        if (productionCompany != null)
+        {
+            _context.ProductionCompanies.Remove(productionCompany);
+            await _context.SaveChangesAsync();
+        }
+        
+        return new RestDTO<ProductionCompany?>()
+        {
+            Data = productionCompany,
+            Links = new List<LinkDTO>
+            {
+                new LinkDTO(
+                    Url.Action(
+                        null,
+                        "ProductionCompanies",
+                        id,
+                        Request.Scheme)!,
+                    "self",
+                    "DELETE"),
+            }
+        };
+
+    }
 }
