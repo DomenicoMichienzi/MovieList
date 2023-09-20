@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MovieList.Constants;
 using MovieList.GraphQL;
+using MovieList.gRPC;
 using MovieList.Models;
 using MovieList.Swagger;
 using Serilog;
@@ -106,7 +107,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         builder.Configuration.GetConnectionString("WebApiMovieDatabase"))
     );
 
-// GraphQL
+// GraphQL Server
 builder.Services.AddGraphQLServer()
     .AddAuthorization()
     .AddQueryType<Query>()
@@ -114,6 +115,9 @@ builder.Services.AddGraphQLServer()
     .AddProjections()
     .AddFiltering()
     .AddSorting();
+
+// gRPC Server
+builder.Services.AddGrpc();
 
 // Identity services
 builder.Services.AddIdentity<ApiUser, IdentityRole> (options =>
@@ -184,7 +188,11 @@ app.UseResponseCaching();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGraphQL();
+// GraphQL endpoint
+app.MapGraphQL("/graphql");
+
+// gRPC
+app.MapGrpcService<GrpcService>();
 
 // Default cache-control directive
 app.Use((context, next) =>
