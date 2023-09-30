@@ -191,7 +191,7 @@ app.UseAuthorization();
 // GraphQL endpoint
 app.MapGraphQL("/graphql");
 
-// gRPC
+// gRPC Service
 app.MapGrpcService<GrpcService>();
 
 // Default cache-control directive
