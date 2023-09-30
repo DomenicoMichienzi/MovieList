@@ -48,7 +48,7 @@ public class SeedController : ControllerBase
         };
         
         using var reader = new StreamReader(
-            System.IO.Path.Combine(_env.ContentRootPath, "Data/movies_2016to2023.csv"));
+            System.IO.Path.Combine(_env.ContentRootPath, "Data/movies.csv"));
         using var csv = new CsvReader(reader, config);
         var existingMovies = await _context.Movies
             .ToDictionaryAsync(m => m.Id);
