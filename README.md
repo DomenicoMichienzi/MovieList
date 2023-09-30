@@ -15,7 +15,7 @@
 * SQLite was used as the Database, so it can be uploaded here on GitHub
 
 ### A few details
-* For space reasons the dataset has been reduced to 200k movies, from over 700k, taking only movies from 2016 to 2023
+* For space reasons the dataset has been reduced to 41k movies, from over 700k, taking only movies from 2021 to 2022
 
 ### Where to go
 * Swagger: `https://localhost:7156/swagger`
