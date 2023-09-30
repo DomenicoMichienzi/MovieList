@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-import "google/protobuf/timestamp.proto";
-
 option csharp_namespace = "MovieList.gRPC";
 
 package Grpc;
@@ -18,5 +16,4 @@ message MovieResponse {
     int32 id = 1;
     string title = 2;
     int32 year = 3;
-    //google.protobuf.Timestamp release_date = 3;
 }
