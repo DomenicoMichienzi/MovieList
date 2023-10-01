@@ -62,7 +62,10 @@ public class GenresController : ControllerBase
         var query = _context.Genres.AsQueryable();
         if (!string.IsNullOrWhiteSpace(input.FilterQuery))
         {
-            query = query.Where(m => m.Name.Contains(input.FilterQuery));
+            query = query.Where(
+                m => m.Name
+                    .ToLower() // ToLower() instead of ToLowerInvariant() for trouble with EF
+                    .Contains(input.FilterQuery.ToLowerInvariant()));
         }
 
         var recordCount = await query.CountAsync();

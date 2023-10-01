@@ -43,7 +43,14 @@ namespace MovieList.Controllers
             
             // Search by Title
             if (!string.IsNullOrWhiteSpace(filterQuery))
-                query = query.Where(m => m.Title.Contains(filterQuery));
+            {   
+                // use ToLowerInvariant on both Title and filterQuery
+                query = query.Where(
+                    m => m.Title
+                    .ToLower() // ToLower() instead of ToLowerInvariant() for trouble with EF
+                    .Contains(filterQuery.ToLowerInvariant()));
+
+            }
 
             var recordCount = await query.CountAsync();
 
