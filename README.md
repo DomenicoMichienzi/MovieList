@@ -1,12 +1,19 @@
 # MovieList
 
-### A Web APIs with ASP.NET Core following [this book](https://www.manning.com/books/building-web-apis-with-asp-net-core)
+This repository contains an ASP.NET Core Web API application that implements REST, GraphQL, and gRPC endpoints in a single 
+ASP.NET Core project. This allows you to provide multiple communication 
+protocols for clients to interact with your API.
+
+The project is inspired by and follows the book 
+[Building Web APIs with ASP.NET Core](https://www.manning.com/books/building-web-apis-with-asp-net-core).
 
 ### Key Features
-* **ASP.NET Core 6**
-* Movie Dataset using REST, GraphQL and gRPC
+
+* ASP.NET Core 6
 * Entity Framework Core
-* RESTful
+* REST
+* GraphQL using [Hot Chocolate](https://chillicream.com/docs/hotchocolate/v13)
+* gRPC
 * Data Validation
 * Logging
 * Caching
